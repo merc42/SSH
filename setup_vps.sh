@@ -444,7 +444,7 @@ case $fw_choice in
             printf "\033[1;32m→ Настройка правил UFW...\033[0m\n"
             ufw default deny incoming
             ufw default allow outgoing
-            ufw allow 22/tcp
+            ufw allow 12042/tcp
             for port in $TUNNEL_PORTS; do
                 printf "\033[1;32m→ Открываем порт %s...\033[0m\n" "$port"
                 ufw allow "$port/tcp"
