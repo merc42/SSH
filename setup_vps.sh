@@ -287,7 +287,7 @@ cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
 # Настраиваем основные параметры SSH
 cat > /etc/ssh/sshd_config << EOF
 # Основные настройки
-Port 22
+Port 12042
 Protocol 2
 HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_ecdsa_key
@@ -332,19 +332,19 @@ fi
 if ! sshd -t; then
     printf "\033[1;31m✗ Ошибка в конфигурации SSH! Восстанавливаем backup...\033[0m\n"
     mv /etc/ssh/sshd_config.backup /etc/ssh/sshd_config
-    systemctl restart sshd
+    systemctl restart ssh
     exit 1
 fi
 
 # Перезапускаем SSH
 printf "\033[1;32m→ Перезапуск SSH сервера...\033[0m\n"
-systemctl restart sshd
+systemctl restart ssh
 
 # Проверяем статус
 if ! systemctl is-active --quiet sshd; then
     printf "\033[1;31m✗ SSH сервер не запустился! Восстанавливаем backup...\033[0m\n"
     mv /etc/ssh/sshd_config.backup /etc/ssh/sshd_config
-    systemctl restart sshd
+    systemctl restart ssh
     exit 1
 fi
 
@@ -460,10 +460,10 @@ esac
 printf "\n\033[1;34m=== Проверка доступности SSH ===\033[0m\n"
 sleep 2  # Даем время на применение правил
 
-if ! nc -zv localhost 22 2>/dev/null; then
+if ! nc -zv localhost 12042 2>/dev/null; then
     printf "\033[1;31m✗ SSH недоступен! Откат изменений...\033[0m\n"
     cleanup_firewall
-    systemctl restart sshd
+    systemctl restart ssh
     exit 1
 fi
 
